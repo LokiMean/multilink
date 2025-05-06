@@ -33,7 +33,7 @@ export default function PlatformPage() {
       <div className="product-grid">
         {filtered.map((item) => (
           <a key={item.id} href={item.href} target="_blank" rel="noreferrer" className="product-card">
-            <img src={item.imgSrc} alt={item.text} />
+            <img src={`${import.meta.env.BASE_URL}${item.imgSrc}`} alt={item.text} />
             <span>{item.text}</span>
           </a>
         ))}

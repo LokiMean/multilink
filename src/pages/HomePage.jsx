@@ -7,10 +7,10 @@ export default function HomePage() {
   const navigate = useNavigate();
   const [query, setQuery] = useState('');
   const platforms = [
-    { name: 'amazon', img: '/amazon/amazon.jpg' },
-    { name: 'temu', img: '/temu/temu.jpg' },
-    { name: 'aliexpress', img: '/aliexpress/aliexpress.jpg' },
-    { name: 'etsy', img: '/etsy/etsy.jpg' },
+    { name: 'amazon', img: 'amazon/amazon.jpg' },
+    { name: 'temu', img: 'temu/temu.jpg' },
+    { name: 'aliexpress', img: 'aliexpress/aliexpress.jpg' },
+    { name: 'etsy', img: 'etsy/etsy.jpg' },
   ];
 
   const filteredProducts = platforms.flatMap((platform) =>
@@ -38,7 +38,7 @@ export default function HomePage() {
           {filteredProducts.length > 0 ? (
             filteredProducts.map((item, i) => (
               <a key={i} href={item.href} target="_blank" rel="noreferrer" className="product-card">
-                <img src={item.imgSrc} alt={item.text} />
+                <img src={`${import.meta.env.BASE_URL}${item.imgSrc}`} alt={item.text} />
                 <span>{item.text}</span>
               </a>
             ))
@@ -55,7 +55,7 @@ export default function HomePage() {
               className="platform-btn"
               onClick={() => navigate(`/platform/${p.name}`)}
             >
-              <img src={p.img} alt={p.name} />
+              <img src={`${import.meta.env.BASE_URL}${p.img}`} alt={p.name} />
             </div>
           ))}
         </div>
