@@ -1,0 +1,72 @@
+/* Apply to all elements */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Global body style */
+body {
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+  font-weight: 500;
+  background-color: #dbc8b2;
+  color: #2e2e2e;
+  line-height: 1.6;
+  font-size: 16px;
+  min-height: 100vh;
+}
+
+/* Center and pad main content */
+main {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: #1f1f1f;
+}
+
+/* Paragraphs */
+p {
+  margin-bottom: 1rem;
+  color: #3e3e3e;
+}
+
+/* Links */
+a {
+  color: #cb6e17;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+a:hover {
+  color: #a95c12;
+}
+
+/* Buttons */
+button {
+  background-color: #e4b07c;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0.6rem 1.2rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+button:hover {
+  background-color: #d89b5c;
+}
+
+/* Images */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 12px;
+}
