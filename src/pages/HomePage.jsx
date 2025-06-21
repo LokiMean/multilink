@@ -1,23 +1,51 @@
 import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
-import { platformData } from '../data/platformData';
+import { useState, useEffect } from 'react';
+import { fetchPlatforms } from '../api/platforms'; // Предполагаем, что эта функция теперь fetchPlatformData
 import '../styles/HomePage.css';
 
 export default function HomePage() {
   const navigate = useNavigate();
   const [query, setQuery] = useState('');
-  const platforms = [
-    { name: 'amazon', img: 'amazon/amazon.jpg' },
-    { name: 'temu', img: 'temu/temu.jpg' },
-    { name: 'aliexpress', img: 'aliexpress/aliexpress.jpg' },
-    { name: 'etsy', img: 'etsy/etsy.jpg' },
-  ];
+  const [platformData, setPlatformData] = useState([]); // Инициализируем как пустой массив
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const filteredProducts = platforms.flatMap((platform) =>
-    platformData[platform.name].links.filter((item) =>
-      item.text.toLowerCase().includes(query.toLowerCase()) || item.id.includes(query)
-    )
-  );
+  useEffect(() => {
+    fetchPlatforms() // Используем fetchPlatformData
+      .then(data => {
+        if (Array.isArray(data)) {
+          setPlatformData(data);
+        } else {
+          console.error("fetchPlatformData не вернул массив:", data);
+          setError("Получен неверный формат данных для платформ.");
+          setPlatformData([]); // Устанавливаем пустой массив для предотвращения ошибок
+        }
+      })
+      .catch((err) => {
+        console.error("Ошибка при загрузке данных платформ:", err);
+        setError(err.message || "Не удалось загрузить данные платформ");
+      })
+      .finally(() => setLoading(false));
+  }, []);
+
+  // Платформы для отображения в сетке (когда нет поиска)
+  // Используем platformData как массив
+  const platformsToDisplay = platformData.map(platform => ({
+    id: platform.id,
+    name: platform.name,
+    imageUrl: platform.image_url, // Используем image_url из данных API
+  }));
+
+  // Продукты, отфильтрованные по поисковому запросу
+  // Используем platformData как массив
+  const filteredProducts = query
+    ? platformData.flatMap(platform => // platform - это объект из массива platformData
+        (platform.links || []).filter(link => // link - это объект из platform.links
+          link.name.toLowerCase().includes(query.toLowerCase()) ||
+          String(link.id).toLowerCase().includes(query.toLowerCase()) // Сравниваем ID ссылки как строку
+        )
+      )
+    : [];
 
   return (
     <div className="home-container">
@@ -32,32 +60,54 @@ export default function HomePage() {
         className="search-input"
       />
 
-      {query ? (
-        // Если есть запрос, отображаем отфильтрованные продукты
+      {loading ? (
+        <p>Loading platforms...</p>
+      ) : error ? (
+        <p>Error: {error}</p>
+      ) : query ? ( // Если есть поисковый запрос, показываем отфильтрованные продукты
         <div className="product-grid">
           {filteredProducts.length > 0 ? (
-            filteredProducts.map((item, i) => (
-              <a key={i} href={item.href} target="_blank" rel="noreferrer" className="product-card">
-                <img src={`${import.meta.env.BASE_URL}${item.imgSrc}`} alt={item.text} />
-                <span>{item.text}</span>
+            filteredProducts.map((link) => ( // link - это объект ссылки
+              <a
+                key={link.id} // Используем уникальный ID ссылки как ключ
+                href={link.link} // Используем link.link для href
+                target="_blank"
+                rel="noreferrer"
+                className="product-card"
+              >
+                {/* Используем link.image_url напрямую. Предполагается, что это абсолютный URL. */}
+                <img src={link.image_url} alt={link.name} />
+                <span>{link.name}</span> {/* Используем link.name для текста */}
               </a>
             ))
           ) : (
-            <p>No products found</p>
+            <p>No products found matching "{query}"</p>
           )}
         </div>
-      ) : (
-        // Если запроса нет, отображаем платформы
+      ) : ( // В противном случае показываем сетку платформ
         <div className="platform-grid">
-          {platforms.map((p) => (
-            <div
-              key={p.name}
-              className="platform-btn"
-              onClick={() => navigate(`/platform/${p.name}`)}
-            >
-              <img src={`${import.meta.env.BASE_URL}${p.img}`} alt={p.name} />
-            </div>
-          ))}
+          {platformsToDisplay.map((p_display) => {
+            // Нам нужен полный объект платформы из platformData для передачи в state
+            const fullPlatformObject = platformData.find(data => data.id === p_display.id);
+
+            return (
+              <div
+                key={p_display.id} // Используем ID платформы как ключ
+                className="platform-btn"
+                onClick={() => {
+                  if (fullPlatformObject) {
+                    // Передаем полный объект платформы через state
+                    navigate(`/platform/${fullPlatformObject.name}`, { state: { platform: fullPlatformObject } });
+                  } else {
+                    console.error("Не удалось найти полный объект для платформы:", p_display.name);
+                  }
+                }}
+              >
+                {/* Используем p_display.imageUrl напрямую. */}
+                <img src={p_display.imageUrl} alt={p_display.name} />
+              </div>
+            );
+          })}
         </div>
       )}
     </div>
