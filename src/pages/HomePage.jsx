@@ -85,14 +85,14 @@ export default function HomePage() {
           )}
         </div>
       ) : ( // В противном случае показываем сетку платформ
-      <div className="platform-grid">
+      <div className="product-grid">
         {platformsToDisplay.map((p_display) => {
           const fullPlatformObject = platformData.find(data => data.id === p_display.id);
 
           return (
             <div
               key={p_display.id}
-              className="platform-btn"
+              className="product-card"
               onClick={() => {
                 if (fullPlatformObject) {
                   navigate(`/platform/${fullPlatformObject.name}`, { state: { platform: fullPlatformObject } });
@@ -100,7 +100,7 @@ export default function HomePage() {
               }}
             >
               <img src={p_display.imageUrl} alt={p_display.name} />
-              <div className="platform-name">{p_display.name}</div> {/* Показываем имя платформы */}
+              <span>{p_display.name}</span> {/* Показываем имя платформы */}
             </div>
           );
         })}
