@@ -1,9 +1,8 @@
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
-const API_KEY = import.meta.env.VITE_API_KEY;
 
 
 export async function fetchPlatforms() {
-  const response = await fetch(`${BASE_URL}category/?api_key=${API_KEY}`, {
+  const response = await fetch(`${BASE_URL}category/`, {
     headers: {
       'Content-Type': 'application/json',
     },
