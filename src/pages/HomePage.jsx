@@ -85,30 +85,26 @@ export default function HomePage() {
           )}
         </div>
       ) : ( // В противном случае показываем сетку платформ
-        <div className="platform-grid">
-          {platformsToDisplay.map((p_display) => {
-            // Нам нужен полный объект платформы из platformData для передачи в state
-            const fullPlatformObject = platformData.find(data => data.id === p_display.id);
+      <div className="platform-grid">
+        {platformsToDisplay.map((p_display) => {
+          const fullPlatformObject = platformData.find(data => data.id === p_display.id);
 
-            return (
-              <div
-                key={p_display.id} // Используем ID платформы как ключ
-                className="platform-btn"
-                onClick={() => {
-                  if (fullPlatformObject) {
-                    // Передаем полный объект платформы через state
-                    navigate(`/platform/${fullPlatformObject.name}`, { state: { platform: fullPlatformObject } });
-                  } else {
-                    console.error("Не удалось найти полный объект для платформы:", p_display.name);
-                  }
-                }}
-              >
-                {/* Используем p_display.imageUrl напрямую. */}
-                <img src={p_display.imageUrl} alt={p_display.name} />
-              </div>
-            );
-          })}
-        </div>
+          return (
+            <div
+              key={p_display.id}
+              className="platform-btn"
+              onClick={() => {
+                if (fullPlatformObject) {
+                  navigate(`/platform/${fullPlatformObject.name}`, { state: { platform: fullPlatformObject } });
+                }
+              }}
+            >
+              <img src={p_display.imageUrl} alt={p_display.name} />
+              <div className="platform-name">{p_display.name}</div> {/* Показываем имя платформы */}
+            </div>
+          );
+        })}
+      </div>
       )}
     </div>
   );
